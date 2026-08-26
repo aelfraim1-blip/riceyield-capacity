@@ -1,9 +1,5 @@
 import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY,
-});
-
 export default async function handler(req: any, res: any) {
   // CORS headers if needed
   res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -24,15 +20,30 @@ export default async function handler(req: any, res: any) {
   }
 
   try {
-    const { prompt, history } = req.body;
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      throw new Error("GEMINI_API_KEY environment variable is not configured.");
+    }
+    
+    const ai = new GoogleGenAI({ apiKey });
+    
+    // Fallbacks in case req.body is undefined or not parsed
+    const body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
+    const prompt = body.prompt || "";
+    const history = body.history || [];
     
     const contents = history
-      .filter((msg: any) => msg.content !== 'Hello! I am the AGRI-STAT AI assistant. How can I help you understand the food security data today?')
+      .filter((msg: any) => msg.content && msg.content !== 'Hello! I am the AGRI-STAT AI assistant. How can I help you understand the food security data today?')
       .map((msg: any) => ({
         role: msg.role === 'assistant' ? 'model' : 'user',
         parts: [{ text: msg.content }]
       }));
-    contents.push({ role: 'user', parts: [{ text: prompt }] });
+      
+    if (prompt) {
+      contents.push({ role: 'user', parts: [{ text: prompt }] });
+    } else if (contents.length === 0) {
+      return res.status(400).json({ error: "No prompt provided" });
+    }
     
     const response = await ai.models.generateContent({
       model: "gemini-3.6-flash",

@@ -44,13 +44,16 @@ export function Chatbot() {
         })
       });
 
-      if (!response.ok) throw new Error('Failed to fetch response');
+      if (!response.ok) {
+        const errData = await response.json().catch(() => null);
+        throw new Error(errData?.error || 'Failed to fetch response');
+      }
       
       const data = await response.json();
       setMessages(prev => [...prev, { role: 'assistant', content: data.text }]);
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      setMessages(prev => [...prev, { role: 'assistant', content: 'Sorry, I encountered an error while processing your request.' }]);
+      setMessages(prev => [...prev, { role: 'assistant', content: `Error: ${error.message || 'I encountered an error while processing your request.'}` }]);
     } finally {
       setIsLoading(false);
     }
