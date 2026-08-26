@@ -4,7 +4,7 @@ import { Trophy, TrendingUp, AlertTriangle, Users, Map as MapIcon } from 'lucide
 
 interface Props {
   data: RegionData[];
-  selectedYear: '2024' | '2030' | '2035';
+  selectedYear: number;
 }
 
 export function Rankings({ data, selectedYear }: Props) {

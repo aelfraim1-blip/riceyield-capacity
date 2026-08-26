@@ -5,7 +5,7 @@ import { RegionData, calculateMetrics } from '../data';
 
 interface MapProps {
   data: RegionData[];
-  selectedYear: '2024' | '2030' | '2035';
+  selectedYear: number;
   selectedRegionId: string | null;
   onSelectRegion: (id: string | null) => void;
 }

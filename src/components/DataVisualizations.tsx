@@ -5,7 +5,7 @@ import { Activity, BarChart2, Map, Users } from 'lucide-react';
 
 interface Props {
   data: RegionData[];
-  selectedYear: '2024' | '2030' | '2035';
+  selectedYear: number;
   selectedRegionId: string | null;
 }
 
@@ -34,7 +34,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 export function DataVisualizations({ data, selectedYear, selectedRegionId }: Props) {
   // 1. Trend Data: Production vs Total Need across years
   const trendData = useMemo(() => {
-    const years: ('2024' | '2030' | '2035')[] = ['2024', '2030', '2035'];
+    const years = [2024, 2026, 2028, 2030, 2032, 2034, 2036, 2038, 2040, 2045, 2050];
     return years.map(year => {
       let prod = 0, need = 0;
       const regionsToUse = selectedRegionId ? data.filter(r => r.id === selectedRegionId) : data;

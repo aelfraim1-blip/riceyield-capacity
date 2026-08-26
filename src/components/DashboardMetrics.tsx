@@ -5,7 +5,7 @@ import { LineChart, Line, ResponsiveContainer, YAxis } from 'recharts';
 
 interface Props {
   region: RegionData | null;
-  selectedYear: '2024' | '2030' | '2035';
+  selectedYear: number;
   allRegions: RegionData[];
 }
 
@@ -43,7 +43,7 @@ export function DashboardMetrics({ region, selectedYear, allRegions }: Props) {
   const landGap = riceYieldArea - requiredRiceLand;
 
   const trendData = useMemo(() => {
-    const years: ('2024' | '2030' | '2035')[] = ['2024', '2030', '2035'];
+    const years = [2024, 2030, 2035, 2040, 2045, 2050];
     return years.map(year => {
       let pop = 0, prod = 0, need = 0, area = 0;
       if (region) {

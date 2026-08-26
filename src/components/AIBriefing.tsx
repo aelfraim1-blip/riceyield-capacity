@@ -4,7 +4,7 @@ import { Bot, AlertTriangle, CheckCircle2, TrendingDown, TrendingUp, ShieldAlert
 
 interface Props {
   data: RegionData[];
-  selectedYear: '2024' | '2030' | '2035';
+  selectedYear: number;
   selectedRegionId: string | null;
 }
 
