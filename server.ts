@@ -35,7 +35,7 @@ async function startServer() {
       contents.push({ role: 'user', parts: [{ text: prompt }] });
       
       const response = await ai.models.generateContent({
-        model: "gemini-3.7-flash",
+        model: "gemini-2.5-flash",
         contents: contents,
         config: {
           systemInstruction: "You are an AI assistant for AGRI-STAT, a dashboard analyzing agricultural food security and carrying capacity in the Philippines. You help users understand the data, which includes population, rice yield, land gaps, and carrying capacity ratios. Be helpful, concise, and knowledgeable about food security concepts.",
