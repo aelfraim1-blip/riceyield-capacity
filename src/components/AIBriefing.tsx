@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { motion } from 'motion/react';
 import { RegionData, calculateMetrics } from '../data';
 import { Bot, AlertTriangle, CheckCircle2, TrendingDown, TrendingUp, ShieldAlert, Target, Zap, Activity, Info, ArrowRight } from 'lucide-react';
 
@@ -115,7 +116,12 @@ export function AIBriefing({ data, selectedYear, selectedRegionId }: Props) {
   const Icon = briefing.icon;
 
   return (
-    <div className={`rounded-2xl border p-6 flex flex-col gap-6 ${briefing.bg}`}>
+    <motion.div 
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      className={`rounded-2xl border p-6 flex flex-col gap-6 ${briefing.bg}`}
+    >
       {/* Header Section */}
       <div className="flex gap-4 items-start border-b border-slate-800/50 pb-5">
         <div className={`p-3 rounded-xl bg-slate-900/80 border border-slate-800 ${briefing.color} shrink-0 shadow-sm`}>
@@ -193,7 +199,7 @@ export function AIBriefing({ data, selectedYear, selectedRegionId }: Props) {
           </ul>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

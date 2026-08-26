@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { motion } from 'motion/react';
 import { RegionData, calculateMetrics } from '../data';
 import { Users, TrendingUp, Package, Percent, UserCheck, Map as MapIcon, Maximize2, Info } from 'lucide-react';
 import { LineChart, Line, ResponsiveContainer, YAxis } from 'recharts';
@@ -102,7 +103,15 @@ export function DashboardMetrics({ region, selectedYear, allRegions }: Props) {
         )}
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <motion.div 
+        variants={{
+          hidden: { opacity: 0 },
+          show: { opacity: 1, transition: { staggerChildren: 0.1 } }
+        }}
+        initial="hidden"
+        animate="show"
+        className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
+      >
         {metrics.map((m, i) => {
           const Icon = m.icon;
           
@@ -113,7 +122,11 @@ export function DashboardMetrics({ region, selectedYear, allRegions }: Props) {
           else if (m.label === 'Rice Production') { valueColor = 'text-emerald-400'; strokeColor = '#34d399'; }
 
           return (
-            <div key={i} className="bg-slate-900 border border-slate-800 p-4 rounded-xl shadow-lg flex flex-col justify-between overflow-hidden relative">
+            <motion.div 
+              key={m.label} 
+              variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}
+              className="bg-slate-900 border border-slate-800 p-4 rounded-xl shadow-lg flex flex-col justify-between overflow-hidden relative"
+            >
               <div>
                 <div className="flex items-start justify-between mb-2 gap-2">
                   <div className="flex items-center gap-1 group relative cursor-help">
@@ -140,15 +153,15 @@ export function DashboardMetrics({ region, selectedYear, allRegions }: Props) {
                       stroke={strokeColor} 
                       strokeWidth={2} 
                       dot={{ r: 2, fill: strokeColor, strokeWidth: 0 }} 
-                      isAnimationActive={false} 
+                      isAnimationActive={true} 
                     />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
-            </div>
+            </motion.div>
           );
         })}
-      </div>
+      </motion.div>
 
       <div className="mt-4 p-3 bg-slate-900/50 border border-slate-800 rounded-lg">
         <p className="text-xs text-slate-400">

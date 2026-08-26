@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'motion/react';
 import { RegionData, calculateMetrics } from '../data';
 import { Trophy, TrendingUp, AlertTriangle, Users, Map as MapIcon } from 'lucide-react';
 
@@ -37,19 +38,31 @@ export function Rankings({ data, selectedYear }: Props) {
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 flex-1 flex flex-col overflow-hidden">
       <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">Regional Performance Ranking</h3>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 flex-1 overflow-y-auto">
+      <motion.div 
+        variants={{
+          hidden: { opacity: 0 },
+          show: { opacity: 1, transition: { staggerChildren: 0.05 } }
+        }}
+        initial="hidden"
+        animate="show"
+        className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 flex-1 overflow-y-auto"
+      >
         {rankings.map((r, i) => {
           return (
-            <div key={i} className="flex items-center justify-between p-2.5 rounded bg-slate-800/50 border border-slate-700/50">
+            <motion.div 
+              key={r.label}
+              variants={{ hidden: { opacity: 0, x: -10 }, show: { opacity: 1, x: 0 } }}
+              className="flex items-center justify-between p-2.5 rounded bg-slate-800/50 border border-slate-700/50"
+            >
               <div className="flex items-center gap-3">
                 <span className="text-[10px] font-bold text-slate-600 w-4">0{i + 1}</span>
                 <span className="text-xs font-medium text-slate-200 truncate max-w-[120px] sm:max-w-[100px] md:max-w-[150px]" title={r.value}>{r.value}</span>
               </div>
               <span className={`text-[10px] font-bold ${r.color} shrink-0`}>{r.label}</span>
-            </div>
+            </motion.div>
           );
         })}
-      </div>
+      </motion.div>
       <div className="mt-3 pt-3 border-t border-slate-800">
         <p className="text-[11px] leading-relaxed text-slate-400">
           <strong className="text-slate-300">Interpretation:</strong> This ranking highlights systemic disparities. Regions with the largest surplus (e.g., {bySurplusDeficit[0]?.region.name}) are crucial "food baskets" necessary to subsidize highly populated, land-scarce areas like {largestDeficitRegion.region.name}.

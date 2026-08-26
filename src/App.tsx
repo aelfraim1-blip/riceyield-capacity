@@ -4,6 +4,7 @@
  */
 
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { regionsData, calculateMetrics } from './data';
 import { PhilippineMap } from './components/PhilippineMap';
 import { DashboardMetrics } from './components/DashboardMetrics';
@@ -164,74 +165,85 @@ export default function App() {
         </div>
 
         <main className="flex-1 overflow-y-auto p-4 md:p-8 w-full max-w-[1600px] mx-auto">
-          {activeSection === 'intelligence' && (
-            <div className="max-w-4xl">
-              <AIBriefing 
-                data={regionsData} 
-                selectedYear={selectedYear} 
-                selectedRegionId={selectedRegionId} 
-              />
-            </div>
-          )}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeSection}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+              className="h-full"
+            >
+              {activeSection === 'intelligence' && (
+                <div className="max-w-4xl">
+                  <AIBriefing 
+                    data={regionsData} 
+                    selectedYear={selectedYear} 
+                    selectedRegionId={selectedRegionId} 
+                  />
+                </div>
+              )}
 
-          {activeSection === 'diagnostic' && (
-            <div className="flex flex-col xl:flex-row gap-6 items-stretch h-full">
-              <div className="xl:w-1/2 flex flex-col gap-6">
-                <div className="bg-slate-900 border border-slate-800 rounded-2xl relative flex flex-col p-4 overflow-hidden h-full min-h-[500px]">
-                  <div className="absolute top-4 left-4 flex flex-col gap-2 z-10">
-                    <div className="flex items-center gap-2 text-[10px] uppercase font-bold text-slate-400">
-                      <span className="w-2 h-2 rounded-full bg-emerald-500"></span> Surplus
+              {activeSection === 'diagnostic' && (
+                <div className="flex flex-col xl:flex-row gap-6 items-stretch h-full">
+                  <div className="xl:w-1/2 flex flex-col gap-6">
+                    <div className="bg-slate-900 border border-slate-800 rounded-2xl relative flex flex-col p-4 overflow-hidden h-full min-h-[500px]">
+                      <div className="absolute top-4 left-4 flex flex-col gap-2 z-10">
+                        <div className="flex items-center gap-2 text-[10px] uppercase font-bold text-slate-400">
+                          <span className="w-2 h-2 rounded-full bg-emerald-500"></span> Surplus
+                        </div>
+                        <div className="flex items-center gap-2 text-[10px] uppercase font-bold text-slate-400">
+                          <span className="w-2 h-2 rounded-full bg-amber-500"></span> Balance
+                        </div>
+                        <div className="flex items-center gap-2 text-[10px] uppercase font-bold text-slate-400">
+                          <span className="w-2 h-2 rounded-full bg-rose-500"></span> Shortage
+                        </div>
+                      </div>
+                      
+                      <div className="flex-1 flex flex-col items-center justify-center">
+                        <PhilippineMap 
+                          data={regionsData}
+                          selectedYear={selectedYear}
+                          selectedRegionId={selectedRegionId}
+                          onSelectRegion={setSelectedRegionId}
+                        />
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2 text-[10px] uppercase font-bold text-slate-400">
-                      <span className="w-2 h-2 rounded-full bg-amber-500"></span> Balance
-                    </div>
-                    <div className="flex items-center gap-2 text-[10px] uppercase font-bold text-slate-400">
-                      <span className="w-2 h-2 rounded-full bg-rose-500"></span> Shortage
+                    <div className="p-4 bg-slate-900 border border-slate-800 rounded-xl">
+                      <p className="text-[11px] leading-relaxed text-slate-400">
+                        <strong className="text-slate-300">Interpretation:</strong> This geospatial heatmap illustrates localized food security. <span className="text-emerald-400">Green regions</span> indicate self-sufficient agricultural output relative to local population density. <span className="text-rose-400">Red regions</span> highlight structural deficits, necessitating robust intra-national supply chains to import rice from surplus territories.
+                      </p>
                     </div>
                   </div>
-                  
-                  <div className="flex-1 flex flex-col items-center justify-center">
-                    <PhilippineMap 
-                      data={regionsData}
-                      selectedYear={selectedYear}
-                      selectedRegionId={selectedRegionId}
-                      onSelectRegion={setSelectedRegionId}
+
+                  <div className="xl:w-1/2 flex flex-col gap-6">
+                    <DashboardMetrics 
+                      region={selectedRegion} 
+                      selectedYear={selectedYear} 
+                      allRegions={regionsData}
                     />
                   </div>
                 </div>
-                <div className="p-4 bg-slate-900 border border-slate-800 rounded-xl">
-                  <p className="text-[11px] leading-relaxed text-slate-400">
-                    <strong className="text-slate-300">Interpretation:</strong> This geospatial heatmap illustrates localized food security. <span className="text-emerald-400">Green regions</span> indicate self-sufficient agricultural output relative to local population density. <span className="text-rose-400">Red regions</span> highlight structural deficits, necessitating robust intra-national supply chains to import rice from surplus territories.
-                  </p>
-                </div>
-              </div>
+              )}
 
-              <div className="xl:w-1/2 flex flex-col gap-6">
-                <DashboardMetrics 
-                  region={selectedRegion} 
+              {activeSection === 'analytics' && (
+                <DataVisualizations 
+                  data={regionsData} 
                   selectedYear={selectedYear} 
-                  allRegions={regionsData}
+                  selectedRegionId={selectedRegionId} 
                 />
-              </div>
-            </div>
-          )}
+              )}
 
-          {activeSection === 'analytics' && (
-            <DataVisualizations 
-              data={regionsData} 
-              selectedYear={selectedYear} 
-              selectedRegionId={selectedRegionId} 
-            />
-          )}
-
-          {activeSection === 'rankings' && (
-            <div className="max-w-3xl mx-auto">
-              <Rankings 
-                data={regionsData} 
-                selectedYear={selectedYear} 
-              />
-            </div>
-          )}
+              {activeSection === 'rankings' && (
+                <div className="max-w-3xl mx-auto">
+                  <Rankings 
+                    data={regionsData} 
+                    selectedYear={selectedYear} 
+                  />
+                </div>
+              )}
+            </motion.div>
+          </AnimatePresence>
         </main>
         
         <Chatbot />
