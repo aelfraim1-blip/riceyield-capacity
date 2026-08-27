@@ -12,9 +12,10 @@ import { Rankings } from './components/Rankings';
 import { DataVisualizations } from './components/DataVisualizations';
 import { AIBriefing } from './components/AIBriefing';
 import { Chatbot } from './components/Chatbot';
-import { Printer, Download, LayoutDashboard, Map as MapIcon, BarChart3, ListOrdered, FileText } from 'lucide-react';
+import { ErrorMetricsPanel } from './components/ErrorMetricsPanel';
+import { Printer, Download, LayoutDashboard, Map as MapIcon, BarChart3, ListOrdered, FileText, ShieldCheck } from 'lucide-react';
 
-type Section = 'intelligence' | 'diagnostic' | 'analytics' | 'rankings';
+type Section = 'intelligence' | 'diagnostic' | 'analytics' | 'rankings' | 'errors';
 
 export default function App() {
   const [selectedYear, setSelectedYear] = useState<number>(2024);
@@ -48,6 +49,7 @@ export default function App() {
     { id: 'diagnostic', label: 'Regional Diagnostic', icon: MapIcon },
     { id: 'analytics', label: 'Comparative Analytics', icon: BarChart3 },
     { id: 'rankings', label: 'National Leaderboard', icon: ListOrdered },
+    { id: 'errors', label: 'Model Error Metrics', icon: ShieldCheck },
   ] as const;
 
   return (
@@ -241,6 +243,14 @@ export default function App() {
                     selectedYear={selectedYear} 
                   />
                 </div>
+              )}
+
+              {activeSection === 'errors' && (
+                <ErrorMetricsPanel 
+                  data={regionsData} 
+                  selectedYear={selectedYear} 
+                  selectedRegionId={selectedRegionId} 
+                />
               )}
             </motion.div>
           </AnimatePresence>
