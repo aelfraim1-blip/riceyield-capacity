@@ -44,6 +44,37 @@ export default function App() {
     URL.revokeObjectURL(url);
   };
 
+  const handleExportAllYearsExcel = () => {
+    const headers = ["Year", "Region ID", "Region Name", "Population", "Production (MT)", "Total Need (MT)", "Carrying Capacity Ratio", "Status", "Growth Rate (%)"];
+    const rows: string[] = [];
+    
+    for (let yr = 2024; yr <= 2050; yr++) {
+      regionsData.forEach(r => {
+        const m = calculateMetrics(r, yr);
+        rows.push([
+          yr,
+          r.id,
+          `"${r.name}"`,
+          m.population,
+          m.production,
+          m.totalNeed,
+          m.carryingCapacity.toFixed(3),
+          `"${m.status}"`,
+          r.growthRate
+        ].join(","));
+      });
+    }
+
+    const csv = [headers.join(","), ...rows].join("\n");
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `agri-stat-master-multi-year-report-2024-2050.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const navItems = [
     { id: 'intelligence', label: 'Intelligence Briefing', icon: FileText },
     { id: 'diagnostic', label: 'Regional Diagnostic', icon: MapIcon },
@@ -134,12 +165,17 @@ export default function App() {
             
             <div className="w-px h-6 bg-slate-800 hidden sm:block"></div>
             
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-center">
               <button onClick={handlePrint} className="p-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded transition-colors" title="Print Report">
                 <Printer size={16} />
               </button>
-              <button onClick={handleExportCSV} className="p-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded transition-colors" title="Export CSV">
-                <Download size={16} />
+              <button onClick={handleExportCSV} className="px-2.5 py-1.5 text-xs font-medium text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors flex items-center gap-1.5" title="Export Current Year CSV">
+                <Download size={14} />
+                <span>Export Year {selectedYear}</span>
+              </button>
+              <button onClick={handleExportAllYearsExcel} className="px-3 py-1.5 text-xs font-bold text-slate-950 bg-emerald-400 hover:bg-emerald-300 rounded-lg transition-colors flex items-center gap-1.5 shadow-sm" title="Export All Years Master Table (Excel/CSV)">
+                <Download size={14} />
+                <span>Export All Years Table</span>
               </button>
             </div>
           </div>
